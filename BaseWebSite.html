@@ -287,6 +287,20 @@
             .player-list {
                 grid-template-columns: 1fr;
             }
+        .toggle-btn {
+            background: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            color: #333;
+            padding: 7px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s, color 0.2s;
+        }
+        .toggle-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
         }
     </style>
 </head>
@@ -386,6 +400,12 @@
         <!-- Player List Section -->
         <div class="section">
             <h2>Player Roster (<span id="playerCount">0</span> players)</h2>
+            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                    <input type="text" id="playerSearch" placeholder="Search players..." style="flex: 1; padding: 7px; border-radius: 4px; border: 1px solid #ccc;">
+                    <button id="showAllBtn" class="toggle-btn active" onclick="setPlayerFilter('all')">All</button>
+                    <button id="showRegularBtn" class="toggle-btn" onclick="setPlayerFilter('regular')">Regular</button>
+                    <button id="showNonRegularBtn" class="toggle-btn" onclick="setPlayerFilter('nonregular')">Non-Regular</button>
+            </div>
             <button id="selectAllBtn" onclick="toggleAllAttendance()">Select All</button>
             <button id="clearAllBtn" onclick="clearAllPlayers()" style="background: #e74c3c;">Clear All</button>
             <div id="playerList" class="player-list"></div>
@@ -429,6 +449,7 @@
         const API_KEY = "AIzaSyB4FKQrbrtGpBztkZVriYkEGsXlnLXHAN0";
         const SHEET_ID = "14YM_2NOOdIJavYuh6iYkoJh1njtjUW0FSL6r5Jjr4Ns";
         const RANGE = "A:H"; // Assuming columns A-H contain: Name, Gender, Throwing, Cutting, Athleticism, Defense, Teamwork, Experience, Regular
+
         
         // Player management
         class Player {
@@ -452,6 +473,20 @@
                        this.defense + this.teamwork + this.experience;
             }
         }
+        
+        // --- NEW: Filter and Search State ---
+        let playerFilter = 'all'; // 'all', 'regular', 'nonregular'
+        let playerSearchTerm = '';
+        
+        // --- NEW: Search bar input event ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... existing slider listener code ...
+    
+            document.getElementById('playerSearch').addEventListener('input', function(e) {
+                playerSearchTerm = e.target.value.toLowerCase();
+                updatePlayerList();
+            });
+        });
         
         // Initialize slider value displays
         document.addEventListener('DOMContentLoaded', function() {
@@ -497,11 +532,22 @@
         function updatePlayerList() {
             const playerList = document.getElementById('playerList');
             const playerCount = document.getElementById('playerCount');
-            
-            playerCount.textContent = players.length;
+    
+            // Filter players based on filter and search
+            let filteredPlayers = players.filter(player => {
+                // Filter by regular/non-regular
+                if (playerFilter === 'regular' && !player.regular) return false;
+                if (playerFilter === 'nonregular' && player.regular) return false;
+                // Filter by search term (name, case-insensitive)
+                if (playerSearchTerm && !player.name.toLowerCase().includes(playerSearchTerm)) return false;
+                return true;
+            });
+    
+            playerCount.textContent = filteredPlayers.length;
             playerList.innerHTML = '';
-            
-            players.forEach((player, index) => {
+    
+            filteredPlayers.forEach(player => {
+                const index = players.indexOf(player); // get index in full players array
                 const playerCard = document.createElement('div');
                 playerCard.className = 'player-card';
                 playerCard.innerHTML = `
@@ -524,6 +570,10 @@
                 playerList.appendChild(playerCard);
             });
         }
+        // --- Optional: Set a default view (uncomment if desired) ---
+         window.addEventListener('DOMContentLoaded', () => {
+             setPlayerFilter('regular'); // or 'nonregular' or 'all'
+         });
         
         // Toggle attendance
         function toggleAttendance(index) {
