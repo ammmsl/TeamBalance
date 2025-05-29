@@ -480,8 +480,12 @@
         
         // --- NEW: Search bar input event ---
         document.addEventListener('DOMContentLoaded', function() {
-            // ... existing slider listener code ...
-    
+            const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
+            sliders.forEach(skill => {
+                const slider = document.getElementById(skill);
+                const valueSpan = document.getElementById(skill + 'Value');
+                slider.addEventListener('input', () => {
+                    valueSpan.textContent = slider.value;
             document.getElementById('playerSearch').addEventListener('input', function(e) {
                 playerSearchTerm = e.target.value.toLowerCase();
                 updatePlayerList();
@@ -528,6 +532,22 @@
             }
         });
         
+        function setPlayerFilter(filter) {
+            playerFilter = filter;
+            // Update button states
+            document.getElementById('showAllBtn').classList.remove('active');
+            document.getElementById('showRegularBtn').classList.remove('active');
+            document.getElementById('showNonRegularBtn').classList.remove('active');
+            if (filter === 'all') {
+                document.getElementById('showAllBtn').classList.add('active');
+            } else if (filter === 'regular') {
+                document.getElementById('showRegularBtn').classList.add('active');
+            } else if (filter === 'nonregular') {
+                document.getElementById('showNonRegularBtn').classList.add('active');
+            }
+            updatePlayerList();
+        }
+                
         // Update player list display
         function updatePlayerList() {
             const playerList = document.getElementById('playerList');
