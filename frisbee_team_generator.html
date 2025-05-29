@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Frisbee Team Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .skill-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .skill-slider input[type="range"] {
+            flex: 1;
+        }
+        
+        .skill-value {
+            min-width: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .player-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .player-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            position: relative;
+        }
+        
+        .player-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .player-skills {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .attendance-checkbox {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .teams-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .team-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+        }
+        
+        .team-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #3498db;
+            color: white;
+            border-radius: 4px;
+        }
+        
+        .team-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 4px;
+        }
+        
+        .team-players {
+            list-style: none;
+        }
+        
+        .team-players li {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-total {
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .algorithm-status {
+            text-align: center;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .status-running {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-complete {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .balance-info {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 6px;
+            color: #2d5a2d;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .teams-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .player-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ultimate Frisbee Team Generator</h1>
+        
+        <!-- Player Entry Section -->
+        <div class="section">
+            <h2>Add Player</h2>
+            <form id="playerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="playerName">Name:</label>
+                        <input type="text" id="playerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="playerGender">Gender:</label>
+                        <select id="playerGender" required>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Throwing:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="throwing" min="1" max="10" value="5">
+                            <span class="skill-value" id="throwingValue">5</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cutting:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="cutting" min="1" max="10" value="5">
+                            <span class="skill-value" id="cuttingValue">5</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Athleticism:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="athleticism" min="1" max="10" value="5">
+                            <span class="skill-value" id="athleticismValue">5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Defense:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="defense" min="1" max="10" value="5">
+                            <span class="skill-value" id="defenseValue">5</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Teamwork:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="teamwork" min="1" max="10" value="5">
+                            <span class="skill-value" id="teamworkValue">5</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Experience:</label>
+                        <div class="skill-slider">
+                            <input type="range" id="experience" min="1" max="10" value="5">
+                            <span class="skill-value" id="experienceValue">5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit">Add Player</button>
+            </form>
+        </div>
+        
+        <!-- Player List Section -->
+        <div class="section">
+            <h2>Player Roster (<span id="playerCount">0</span> players)</h2>
+            <button id="selectAllBtn" onclick="toggleAllAttendance()">Select All</button>
+            <button id="clearAllBtn" onclick="clearAllPlayers()" style="background: #e74c3c;">Clear All</button>
+            <div id="playerList" class="player-list"></div>
+        </div>
+        
+        <!-- Team Generation Section -->
+        <div class="section">
+            <h2>Generate Teams</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="numTeams">Number of Teams:</label>
+                    <select id="numTeams">
+                        <option value="2">2 Teams</option>
+                        <option value="3">3 Teams</option>
+                        <option value="4">4 Teams</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button id="generateBtn" onclick="generateTeams()">Generate Teams</button>
+                </div>
+            </div>
+            
+            <div id="algorithmStatus" class="algorithm-status" style="display: none;"></div>
+            <div id="balanceInfo" class="balance-info" style="display: none;"></div>
+        </div>
+        
+        <!-- Teams Display Section -->
+        <div id="teamsSection" class="section" style="display: none;">
+            <h2>Generated Teams</h2>
+            <div id="teamsContainer" class="teams-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let players = [];
+        let teams = [];
+        
+        // Player management
+        class Player {
+            constructor(name, gender, throwing, cutting, athleticism, defense, teamwork, experience) {
+                this.name = name;
+                this.gender = gender;
+                this.throwing = parseInt(throwing);
+                this.cutting = parseInt(cutting);
+                this.athleticism = parseInt(athleticism);
+                this.defense = parseInt(defense);
+                this.teamwork = parseInt(teamwork);
+                this.experience = parseInt(experience);
+                this.attending = true;
+                this.id = Date.now() + Math.random();
+            }
+            
+            getTotalSkill() {
+                return this.throwing + this.cutting + this.athleticism + 
+                       this.defense + this.teamwork + this.experience;
+            }
+        }
+        
+        // Initialize slider value displays
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
+            sliders.forEach(skill => {
+                const slider = document.getElementById(skill);
+                const valueSpan = document.getElementById(skill + 'Value');
+                slider.addEventListener('input', () => {
+                    valueSpan.textContent = slider.value;
+                });
+            });
+        });
+        
+        // Form submission
+        document.getElementById('playerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('playerName').value.trim();
+            const gender = document.getElementById('playerGender').value;
+            const throwing = document.getElementById('throwing').value;
+            const cutting = document.getElementById('cutting').value;
+            const athleticism = document.getElementById('athleticism').value;
+            const defense = document.getElementById('defense').value;
+            const teamwork = document.getElementById('teamwork').value;
+            const experience = document.getElementById('experience').value;
+            
+            if (name) {
+                const player = new Player(name, gender, throwing, cutting, athleticism, defense, teamwork, experience);
+                players.push(player);
+                updatePlayerList();
+                this.reset();
+                
+                // Reset slider displays
+                const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
+                sliders.forEach(skill => {
+                    document.getElementById(skill + 'Value').textContent = '5';
+                });
+            }
+        });
+        
+        // Update player list display
+        function updatePlayerList() {
+            const playerList = document.getElementById('playerList');
+            const playerCount = document.getElementById('playerCount');
+            
+            playerCount.textContent = players.length;
+            playerList.innerHTML = '';
+            
+            players.forEach((player, index) => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'player-card';
+                playerCard.innerHTML = `
+                    <input type="checkbox" class="attendance-checkbox" ${player.attending ? 'checked' : ''} 
+                           onchange="toggleAttendance(${index})">
+                    <h4>${player.name} (${player.gender}) - Total: ${player.getTotalSkill()}</h4>
+                    <div class="player-skills">
+                        <div>Throwing: ${player.throwing}</div>
+                        <div>Cutting: ${player.cutting}</div>
+                        <div>Athleticism: ${player.athleticism}</div>
+                        <div>Defense: ${player.defense}</div>
+                        <div>Teamwork: ${player.teamwork}</div>
+                        <div>Experience: ${player.experience}</div>
+                    </div>
+                    <button onclick="removePlayer(${index})" style="background: #e74c3c; margin-top: 10px; padding: 5px 10px; font-size: 12px;">Remove</button>
+                `;
+                playerList.appendChild(playerCard);
+            });
+        }
+        
+        // Toggle attendance
+        function toggleAttendance(index) {
+            players[index].attending = !players[index].attending;
+        }
+        
+        // Toggle all attendance
+        function toggleAllAttendance() {
+            const allSelected = players.every(p => p.attending);
+            players.forEach(p => p.attending = !allSelected);
+            updatePlayerList();
+        }
+        
+        // Remove player
+        function removePlayer(index) {
+            players.splice(index, 1);
+            updatePlayerList();
+        }
+        
+        // Clear all players
+        function clearAllPlayers() {
+            if (confirm('Are you sure you want to remove all players?')) {
+                players = [];
+                updatePlayerList();
+                document.getElementById('teamsSection').style.display = 'none';
+            }
+        }
+        
+        // Simulated Annealing Algorithm
+        class SimulatedAnnealing {
+            constructor(players, numTeams) {
+                this.players = players.filter(p => p.attending);
+                this.numTeams = numTeams;
+                this.bestTeams = null;
+                this.bestCost = Infinity;
+            }
+            
+            // Create initial random team assignment
+            createInitialSolution() {
+                const shuffled = [...this.players].sort(() => Math.random() - 0.5);
+                const teams = [];
+                
+                // Initialize teams
+                for (let i = 0; i < this.numTeams; i++) {
+                    teams.push([]);
+                }
+                
+                // Distribute players as evenly as possible
+                shuffled.forEach((player, index) => {
+                    teams[index % this.numTeams].push(player);
+                });
+                
+                return teams;
+            }
+            
+            // Calculate cost function (lower is better)
+            calculateCost(teams) {
+                const teamTotals = teams.map(team => 
+                    team.reduce((sum, player) => sum + player.getTotalSkill(), 0)
+                );
+                
+                const femalesCounts = teams.map(team =>
+                    team.filter(p => p.gender === 'F').length
+                );
+                
+                // Calculate skill variance (want to minimize)
+                const avgTotal = teamTotals.reduce((a, b) => a + b, 0) / teams.length;
+                const skillVariance = teamTotals.reduce((sum, total) => 
+                    sum + Math.pow(total - avgTotal, 2), 0
+                );
+                
+                // Gender balance penalty
+                const avgFemales = femalesCounts.reduce((a, b) => a + b, 0) / teams.length;
+                const genderVariance = femalesCounts.reduce((sum, count) =>
+                    sum + Math.pow(count - avgFemales, 2), 0
+                );
+                
+                // Team size penalty (prefer balanced team sizes)
+                const teamSizes = teams.map(team => team.length);
+                const avgSize = teamSizes.reduce((a, b) => a + b, 0) / teams.length;
+                const sizeVariance = teamSizes.reduce((sum, size) =>
+                    sum + Math.pow(size - avgSize, 2), 0
+                );
+                
+                return skillVariance + (genderVariance * 50) + (sizeVariance * 25);
+            }
+            
+            // Generate neighbor solution by swapping two players
+            generateNeighbor(currentTeams) {
+                const newTeams = currentTeams.map(team => [...team]);
+                
+                // Find two random teams and swap random players
+                const team1Index = Math.floor(Math.random() * newTeams.length);
+                let team2Index = Math.floor(Math.random() * newTeams.length);
+                while (team2Index === team1Index && newTeams.length > 1) {
+                    team2Index = Math.floor(Math.random() * newTeams.length);
+                }
+                
+                if (newTeams[team1Index].length > 0 && newTeams[team2Index].length > 0) {
+                    const player1Index = Math.floor(Math.random() * newTeams[team1Index].length);
+                    const player2Index = Math.floor(Math.random() * newTeams[team2Index].length);
+                    
+                    // Swap players
+                    const temp = newTeams[team1Index][player1Index];
+                    newTeams[team1Index][player1Index] = newTeams[team2Index][player2Index];
+                    newTeams[team2Index][player2Index] = temp;
+                }
+                
+                return newTeams;
+            }
+            
+            // Main simulated annealing algorithm
+            async optimize() {
+                const initialTemp = 100;
+                const coolingRate = 0.995;
+                const maxIterations = 15000;
+                
+                let currentSolution = this.createInitialSolution();
+                let currentCost = this.calculateCost(currentSolution);
+                
+                this.bestTeams = currentSolution.map(team => [...team]);
+                this.bestCost = currentCost;
+                
+                let temperature = initialTemp;
+                
+                for (let iteration = 0; iteration < maxIterations; iteration++) {
+                    // Update progress occasionally
+                    if (iteration % 1000 === 0) {
+                        const progress = Math.round((iteration / maxIterations) * 100);
+                        document.getElementById('algorithmStatus').innerHTML = 
+                            `Optimizing teams... ${progress}% complete<br>Current best balance: ${Math.round(this.bestCost)}`;
+                        await new Promise(resolve => setTimeout(resolve, 1));
+                    }
+                    
+                    const neighbor = this.generateNeighbor(currentSolution);
+                    const neighborCost = this.calculateCost(neighbor);
+                    
+                    // Accept or reject the neighbor
+                    const delta = neighborCost - currentCost;
+                    if (delta < 0 || Math.random() < Math.exp(-delta / temperature)) {
+                        currentSolution = neighbor;
+                        currentCost = neighborCost;
+                        
+                        // Update best solution
+                        if (currentCost < this.bestCost) {
+                            this.bestTeams = currentSolution.map(team => [...team]);
+                            this.bestCost = currentCost;
+                        }
+                    }
+                    
+                    temperature *= coolingRate;
+                }
+                
+                return this.bestTeams;
+            }
+        }
+        
+        // Generate teams function
+        async function generateTeams() {
+            const attendingPlayers = players.filter(p => p.attending);
+            const numTeams = parseInt(document.getElementById('numTeams').value);
+            const minPlayersNeeded = numTeams * 5; // Minimum 5 players per team
+            
+            if (attendingPlayers.length < minPlayersNeeded) {
+                alert(`Need at least ${minPlayersNeeded} attending players to generate ${numTeams} teams (minimum 5 per team)!`);
+                return;
+            }
+            
+            // Show algorithm status
+            document.getElementById('algorithmStatus').style.display = 'block';
+            document.getElementById('algorithmStatus').className = 'algorithm-status status-running';
+            document.getElementById('algorithmStatus').textContent = 'Initializing optimization...';
+            document.getElementById('generateBtn').disabled = true;
+            
+            try {
+                const sa = new SimulatedAnnealing(players, numTeams);
+                teams = await sa.optimize();
+                
+                // Update status
+                document.getElementById('algorithmStatus').className = 'algorithm-status status-complete';
+                document.getElementById('algorithmStatus').textContent = 'Team optimization complete!';
+                
+                displayTeams();
+                showBalanceInfo();
+                
+            } catch (error) {
+                console.error('Error generating teams:', error);
+                document.getElementById('algorithmStatus').className = 'algorithm-status';
+                document.getElementById('algorithmStatus').style.background = '#f8d7da';
+                document.getElementById('algorithmStatus').style.color = '#721c24';
+                document.getElementById('algorithmStatus').textContent = 'Error generating teams. Please try again.';
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+        
+        // Display generated teams
+        function displayTeams() {
+            const teamsContainer = document.getElementById('teamsContainer');
+            const teamsSection = document.getElementById('teamsSection');
+            
+            teamsContainer.innerHTML = '';
+            teamsSection.style.display = 'block';
+            
+            teams.forEach((team, index) => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+                
+                const totalSkill = team.reduce((sum, player) => sum + player.getTotalSkill(), 0);
+                const femaleCount = team.filter(p => p.gender === 'F').length;
+                const maleCount = team.length - femaleCount;
+                
+                teamCard.innerHTML = `
+                    <div class="team-header">
+                        <h3>Team ${index + 1}</h3>
+                    </div>
+                    <div class="team-stats">
+                        <div><strong>Players:</strong> ${team.length}</div>
+                        <div><strong>Total Skill:</strong> ${totalSkill}</div>
+                        <div><strong>Gender:</strong> ${maleCount}M / ${femaleCount}F</div>
+                    </div>
+                    <ul class="team-players">
+                        ${team.map(player => `
+                            <li>
+                                <span>${player.name} (${player.gender})</span>
+                                <span class="player-total">${player.getTotalSkill()}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+                
+                teamsContainer.appendChild(teamCard);
+            });
+        }
+        
+        // Show balance information
+        function showBalanceInfo() {
+            const balanceInfo = document.getElementById('balanceInfo');
+            
+            if (teams.length === 0) {
+                balanceInfo.style.display = 'none';
+                return;
+            }
+            
+            const teamTotals = teams.map(team => 
+                team.reduce((sum, player) => sum + player.getTotalSkill(), 0)
+            );
+            
+            const maxTotal = Math.max(...teamTotals);
+            const minTotal = Math.min(...teamTotals);
+            const avgTotal = teamTotals.reduce((a, b) => a + b, 0) / teams.length;
+            const balancePercentage = ((maxTotal - minTotal) / avgTotal * 100).toFixed(1);
+            
+            balanceInfo.innerHTML = `
+                <strong>Team Balance Analysis</strong><br>
+                Skill Range: ${minTotal} - ${maxTotal} (${balancePercentage}% difference)<br>
+                Average Team Skill: ${avgTotal.toFixed(1)}
+            `;
+            balanceInfo.style.display = 'block';
+        }
+        
+        // Add some sample players for testing
+        function addSamplePlayers() {
+            const samplePlayers = [
+                new Player('Alice', 'F', 8, 7, 9, 6, 8, 7),
+                new Player('Bob', 'M', 6, 8, 7, 8, 7, 6),
+                new Player('Carol', 'F', 7, 9, 6, 7, 9, 8),
+                new Player('Dave', 'M', 9, 6, 8, 7, 6, 9),
+                new Player('Emma', 'F', 5, 7, 8, 9, 8, 6),
+                new Player('Frank', 'M', 8, 5, 7, 6, 7, 8),
+                new Player('Grace', 'F', 7, 8, 6, 8, 9, 7),
+                new Player('Henry', 'M', 6, 7, 9, 5, 6, 8),
+                new Player('Ivy', 'F', 9, 6, 7, 8, 7, 6),
+                new Player('Jack', 'M', 5, 8, 6, 7, 8, 9)
+            ];
+            
+            players.push(...samplePlayers);
+            updatePlayerList();
+        }
+        
+        // Uncomment the line below to add sample players for testing
+        // addSamplePlayers();
+    </script>
+</body>
+</html>
