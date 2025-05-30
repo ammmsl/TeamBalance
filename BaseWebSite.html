@@ -113,35 +113,64 @@
         
         .player-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
             margin-top: 15px;
         }
         
         .player-card {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            padding: 16px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
             position: relative;
+            min-width: 0;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            height: 48px;
+            border-left: 4px solid transparent;
         }
         
-        .player-card h4 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+        .player-card.male {
+            border-left: 4px solid #2196f3 !important;
         }
         
-        .player-skills {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            font-size: 12px;
+        .player-card.female {
+            border-left: 4px solid #e91e63 !important;
         }
         
-        .attendance-checkbox {
+        .player-card.active {
+            background: #20b2aa;
+            color: white;
+            border-color: #138d87;
+            /* Do NOT override border-left here, so gender color stays visible */
+        }
+        
+        .player-card .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 16px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 6px;
+            right: 8px;
+        }
+        
+        .player-card .remove-btn:hover {
+            background: #c0392b;
         }
         
         .teams-container {
@@ -215,23 +244,35 @@
             border: 1px solid #c3e6cb;
         }
         
+        #regularPlayersList {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
         .regular-player-toggle {
             background: #ecf0f1;
             border: 2px solid #bdc3c7;
-            padding: 8px 12px;
+            padding: 16px 12px;
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
-            display: inline-block;
-            margin: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            min-height: 48px;
+            height: 48px;
+            box-sizing: border-box;
         }
         
         .regular-player-toggle.active {
-            background: #3498db;
+            background: #20b2aa;
             color: white;
-            border-color: #2980b9;
+            border-color: #138d87;
         }
         
         .regular-player-toggle.female {
@@ -287,20 +328,155 @@
             .player-list {
                 grid-template-columns: 1fr;
             }
-        .toggle-btn {
-            background: #ecf0f1;
-            border: 1px solid #bdc3c7;
-            color: #333;
-            padding: 7px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s, color 0.2s;
         }
-        .toggle-btn.active {
-            background: #3498db;
+        
+        .player-card.active {
+            background: #20b2aa;
             color: white;
-            border-color: #2980b9;
+            border-color: #138d87;
+        }
+        .player-card.active .regular-badge {
+            background: #fff;
+            color: #28a745;
+        }
+        .player-card:hover {
+            background: #ecf0f1;
+        }
+
+        .button-grid, .button-grid-inner {
+            display: grid;
+            grid-auto-flow: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .button-grid-inner {
+            grid-auto-flow: column;
+            gap: 10px;
+        }
+
+        .generate-teams-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 30px;
+            align-items: end;
+            margin-bottom: 10px;
+        }
+
+        .teams-number-group {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .teams-number-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+        }
+
+        .teams-number-row button {
+            height: 48px;
+            font-size: 22px;
+            width: 48px;
+            padding: 0;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .teams-number-row input[type="number"] {
+            width: 70px;
+            text-align: center;
+            font-size: 18px;
+            height: 48px;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+
+        .teams-number-row button:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        .teams-generate-btn-group {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            height: 100%;
+            width: 100%;
+        }
+
+        #generateBtn {
+            height: 48px;
+            font-size: 18px;
+            width: 100%;
+            max-width: 220px;
+        }
+
+        #numTeamsGrid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .num-teams-btn {
+            background: #ecf0f1;
+            color: #333;
+            border: 2px solid #bdc3c7;
+            border-radius: 20px;
+            padding: 12px 0;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .num-teams-btn.active {
+            background: #20b2aa;
+            color: #fff;
+            border-color: #138d87;
+        }
+        @media (max-width: 600px) {
+            #numTeamsGrid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .regular-toggle-btn {
+            background: #ecf0f1;
+            color: #333;
+            border: 2px solid #bdc3c7;
+            border-radius: 20px;
+            padding: 8px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .regular-toggle-btn.active {
+            background: #20b2aa;
+            color: #fff;
+            border-color: #138d87;
+        }
+
+        /* Collapsible Add Player Section */
+        #addPlayerSection {
+            cursor: pointer;
+        }
+        
+        #addPlayerToggleIcon {
+            transition: transform 0.3s;
+        }
+        
+        #addPlayerSection.collapsed #addPlayerToggleIcon {
+            transform: rotate(-180deg);
+        }
+        
+        #playerForm {
+            display: none;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -310,27 +486,71 @@
         
         <!-- Google Sheets Integration Section -->
         <div class="section">
-            <h2>Player Database</h2>
-            <div class="form-row">
-                <div class="form-group">
-                    <button id="loadSheetsBtn" onclick="loadFromGoogleSheets()">Load Players from Google Sheets</button>
-                    <button id="refreshSheetsBtn" onclick="refreshFromGoogleSheets()" style="background: #27ae60;">Refresh Data</button>
-                </div>
+            <h2 style="margin-bottom: 2px;">Player Database</h2>
+            <div style="color:#555; font-size: 14px; margin-bottom: 12px; margin-top: 0;">
+                <em>Linked to Google Sheets.</em>
+            </div>
+            <div class="button-grid-inner" style="margin-bottom: 10px;">
+                <button id="loadSheetsBtn" onclick="loadFromGoogleSheets()">Load Players</button>
+                <button id="refreshSheetsBtn" onclick="refreshFromGoogleSheets()" style="background: #27ae60;">Refresh Data</button>
             </div>
             <div id="sheetsStatus" class="algorithm-status" style="display: none;"></div>
+        </div>
+
+        <!-- Team Generation Section (moved here, just below Player Database) -->
+        <div class="section">
+            <h2>Generate Teams</h2>
+            <div style="color:#555; font-size: 14px; margin-bottom: 12px; margin-top: 0;">
+                <em>Select the number of teams to be made.</em>
+            </div>
+            <div class="button-grid-inner" id="numTeamsGrid" style="margin-bottom: 20px; grid-template-columns: repeat(9, 1fr);">
+                <!-- Number of teams buttons will be generated here -->
+            </div>
+            <div class="button-grid-inner" style="justify-content: center;">
+                <button id="generateBtn" onclick="generateTeams()">Generate Teams</button>
+            </div>
+            <div id="algorithmStatus" class="algorithm-status" style="display: none;"></div>
+            <div id="balanceInfo" class="balance-info" style="display: none;"></div>
+        </div>
+        
+        <!-- Teams Display Section (already in correct position) -->
+        <div id="teamsSection" class="section" style="display: none;">
+            <h2>Generated Teams</h2>
+            <div class="button-grid-inner" style="margin-bottom: 15px;">
+                <button id="copyTeamsBtn" onclick="copyTeamsToClipboard()">Copy Teams</button>
+            </div>
+            <div id="teamsContainer" class="teams-container"></div>
         </div>
         
         <!-- Regular Players Quick Selection -->
         <div id="regularPlayersSection" class="section" style="display: none;">
             <h2>Regular Players - Quick Select</h2>
             <p>Toggle attendance for regular players:</p>
+            <div class="button-grid-inner" style="margin-bottom: 10px;">
+                <button type="button" id="regularSelectAllBtn" onclick="toggleAllRegularAttendance()">Select All</button>
+            </div>
             <div id="regularPlayersList" class="form-row" style="flex-wrap: wrap; gap: 10px;"></div>
         </div>
         
-        <!-- Player Entry Section -->
+        <!-- Player List Section -->
         <div class="section">
-            <h2>Add Player</h2>
-            <form id="playerForm">
+            <h2>Player Roster (<span id="playerCount">0</span> players)</h2>
+            <div class="button-grid-inner" style="margin-bottom: 10px;">
+                <button id="selectAllBtn" onclick="toggleAllAttendance()">Select All</button>
+                <button id="clearSelectionBtn" onclick="clearSelection()" style="background: #f39c12;">Clear Selection</button>
+                <button id="clearAllBtn" onclick="clearAllPlayers()" style="background: #e74c3c;">Clear All</button>
+            </div>
+            <input type="text" id="playerSearch" placeholder="Search players..." style="margin-bottom: 10px; width: 100%; padding: 8px; font-size: 16px; border-radius: 4px; border: 1px solid #ccc;">
+            <div id="playerList" class="player-list"></div>
+        </div>
+
+        <!-- Collapsible Add Player Section -->
+        <div class="section" id="addPlayerSection">
+            <div style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;" onclick="toggleAddPlayerForm()">
+                <h2 style="margin-bottom: 0;">Add Player</h2>
+                <span id="addPlayerToggleIcon" style="font-size: 28px; user-select: none;">&#x25BC;</span>
+            </div>
+            <form id="playerForm" style="display: none; margin-top: 15px;">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="playerName">Name:</label>
@@ -344,7 +564,6 @@
                         </select>
                     </div>
                 </div>
-                
                 <div class="form-row">
                     <div class="form-group">
                         <label>Throwing:</label>
@@ -368,7 +587,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="form-row">
                     <div class="form-group">
                         <label>Defense:</label>
@@ -392,50 +610,18 @@
                         </div>
                     </div>
                 </div>
-                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Regular Player:</label>
+                        <div class="button-grid-inner" id="regularPlayerToggleGroup">
+                            <button type="button" id="regularNoBtn" class="regular-toggle-btn active" onclick="setRegularPlayer(false)">No</button>
+                            <button type="button" id="regularYesBtn" class="regular-toggle-btn" onclick="setRegularPlayer(true)">Yes</button>
+                        </div>
+                        <input type="hidden" id="playerRegular" value="false">
+                    </div>
+                </div>
                 <button type="submit">Add Player</button>
             </form>
-        </div>
-        
-        <!-- Player List Section -->
-        <div class="section">
-            <h2>Player Roster (<span id="playerCount">0</span> players)</h2>
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
-                    <input type="text" id="playerSearch" placeholder="Search players..." style="flex: 1; padding: 7px; border-radius: 4px; border: 1px solid #ccc;">
-                    <button id="showAllBtn" class="toggle-btn active" onclick="setPlayerFilter('all')">All</button>
-                    <button id="showRegularBtn" class="toggle-btn" onclick="setPlayerFilter('regular')">Regular</button>
-                    <button id="showNonRegularBtn" class="toggle-btn" onclick="setPlayerFilter('nonregular')">Non-Regular</button>
-            </div>
-            <button id="selectAllBtn" onclick="toggleAllAttendance()">Select All</button>
-            <button id="clearAllBtn" onclick="clearAllPlayers()" style="background: #e74c3c;">Clear All</button>
-            <div id="playerList" class="player-list"></div>
-        </div>
-        
-        <!-- Team Generation Section -->
-        <div class="section">
-            <h2>Generate Teams</h2>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="numTeams">Number of Teams:</label>
-                    <select id="numTeams">
-                        <option value="2">2 Teams</option>
-                        <option value="3">3 Teams</option>
-                        <option value="4">4 Teams</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <button id="generateBtn" onclick="generateTeams()">Generate Teams</button>
-                </div>
-            </div>
-            
-            <div id="algorithmStatus" class="algorithm-status" style="display: none;"></div>
-            <div id="balanceInfo" class="balance-info" style="display: none;"></div>
-        </div>
-        
-        <!-- Teams Display Section -->
-        <div id="teamsSection" class="section" style="display: none;">
-            <h2>Generated Teams</h2>
-            <div id="teamsContainer" class="teams-container"></div>
         </div>
     </div>
 
@@ -448,8 +634,7 @@
         // Google Sheets API configuration
         const API_KEY = "AIzaSyB4FKQrbrtGpBztkZVriYkEGsXlnLXHAN0";
         const SHEET_ID = "14YM_2NOOdIJavYuh6iYkoJh1njtjUW0FSL6r5Jjr4Ns";
-        const RANGE = "A:H"; // Assuming columns A-H contain: Name, Gender, Throwing, Cutting, Athleticism, Defense, Teamwork, Experience, Regular
-
+        const RANGE = "A:I"; // Now includes the Regular column
         
         // Player management
         class Player {
@@ -474,24 +659,6 @@
             }
         }
         
-        // --- NEW: Filter and Search State ---
-        let playerFilter = 'all'; // 'all', 'regular', 'nonregular'
-        let playerSearchTerm = '';
-        
-        // --- NEW: Search bar input event ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
-            sliders.forEach(skill => {
-                const slider = document.getElementById(skill);
-                const valueSpan = document.getElementById(skill + 'Value');
-                slider.addEventListener('input', () => {
-                    valueSpan.textContent = slider.value;
-            document.getElementById('playerSearch').addEventListener('input', function(e) {
-                playerSearchTerm = e.target.value.toLowerCase();
-                updatePlayerList();
-            });
-        });
-        
         // Initialize slider value displays
         document.addEventListener('DOMContentLoaded', function() {
             const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
@@ -507,7 +674,7 @@
         // Form submission
         document.getElementById('playerForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const name = document.getElementById('playerName').value.trim();
             const gender = document.getElementById('playerGender').value;
             const throwing = document.getElementById('throwing').value;
@@ -516,84 +683,56 @@
             const defense = document.getElementById('defense').value;
             const teamwork = document.getElementById('teamwork').value;
             const experience = document.getElementById('experience').value;
-            
-            if (name) {
-                const player = new Player(name, gender, throwing, cutting, athleticism, defense, teamwork, experience, false, 'manual');
-                players.push(player);
-                updatePlayerList();
-                updateRegularPlayersSection();
-                this.reset();
-                
-                // Reset slider displays
-                const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
-                sliders.forEach(skill => {
-                    document.getElementById(skill + 'Value').textContent = '5';
-                });
-            }
+            const regular = document.getElementById('playerRegular').value === "true";
+
+    if (name) {
+        const player = new Player(name, gender, throwing, cutting, athleticism, defense, teamwork, experience, regular, 'manual');
+        players.push(player);
+        updatePlayerList();
+        updateRegularPlayersSection();
+        this.reset();
+
+        // Reset slider displays
+        const sliders = ['throwing', 'cutting', 'athleticism', 'defense', 'teamwork', 'experience'];
+        sliders.forEach(skill => {
+            document.getElementById(skill + 'Value').textContent = '5';
+        });
+
+        // Reset regular toggle to "No"
+        setRegularPlayer(false);
+    }
         });
         
-        function setPlayerFilter(filter) {
-            playerFilter = filter;
-            // Update button states
-            document.getElementById('showAllBtn').classList.remove('active');
-            document.getElementById('showRegularBtn').classList.remove('active');
-            document.getElementById('showNonRegularBtn').classList.remove('active');
-            if (filter === 'all') {
-                document.getElementById('showAllBtn').classList.add('active');
-            } else if (filter === 'regular') {
-                document.getElementById('showRegularBtn').classList.add('active');
-            } else if (filter === 'nonregular') {
-                document.getElementById('showNonRegularBtn').classList.add('active');
-            }
-            updatePlayerList();
-        }
-                
-        // Update player list display
+        // Update player list display to support search
         function updatePlayerList() {
             const playerList = document.getElementById('playerList');
             const playerCount = document.getElementById('playerCount');
-    
-            // Filter players based on filter and search
-            let filteredPlayers = players.filter(player => {
-                // Filter by regular/non-regular
-                if (playerFilter === 'regular' && !player.regular) return false;
-                if (playerFilter === 'nonregular' && player.regular) return false;
-                // Filter by search term (name, case-insensitive)
-                if (playerSearchTerm && !player.name.toLowerCase().includes(playerSearchTerm)) return false;
-                return true;
-            });
-    
-            playerCount.textContent = filteredPlayers.length;
+            const searchValue = (document.getElementById('playerSearch')?.value || '').toLowerCase();
+
+            // Filter players by search
+            const filteredPlayers = players.filter(player =>
+                player.name.toLowerCase().includes(searchValue)
+            );
+
+            playerCount.textContent = players.length;
             playerList.innerHTML = '';
-    
-            filteredPlayers.forEach(player => {
-                const index = players.indexOf(player); // get index in full players array
+
+            filteredPlayers.forEach((player, index) => {
+                const genderClass = player.gender === 'F' ? 'female' : 'male';
                 const playerCard = document.createElement('div');
-                playerCard.className = 'player-card';
+                playerCard.className = `player-card ${genderClass}${player.attending ? ' active' : ''}`;
+                playerCard.onclick = () => {
+                    player.attending = !player.attending;
+                    updatePlayerList();
+                    updateRegularPlayersSection();
+                };
                 playerCard.innerHTML = `
-                    <input type="checkbox" class="attendance-checkbox" ${player.attending ? 'checked' : ''} 
-                           onchange="toggleAttendance(${index})">
-                    <h4>${player.name} (${player.gender}) - Total: ${player.getTotalSkill()}
-                        ${player.regular ? '<span class="regular-badge">REGULAR</span>' : ''}
-                    </h4>
-                    <div class="player-skills">
-                        <div>Throwing: ${player.throwing}</div>
-                        <div>Cutting: ${player.cutting}</div>
-                        <div>Athleticism: ${player.athleticism}</div>
-                        <div>Defense: ${player.defense}</div>
-                        <div>Teamwork: ${player.teamwork}</div>
-                        <div>Experience: ${player.experience}</div>
-                    </div>
-                    <div class="player-source">Source: ${player.source === 'sheets' ? 'Google Sheets' : 'Manual Entry'}</div>
-                    <button onclick="removePlayer(${index})" style="background: #e74c3c; margin-top: 10px; padding: 5px 10px; font-size: 12px;">Remove</button>
+                    <span>${player.name} (${player.gender})</span>
+                    <button class="remove-btn" onclick="event.stopPropagation(); removePlayer(${index})">&times;</button>
                 `;
                 playerList.appendChild(playerCard);
             });
         }
-        // --- Optional: Set a default view (uncomment if desired) ---
-         window.addEventListener('DOMContentLoaded', () => {
-             setPlayerFilter('regular'); // or 'nonregular' or 'all'
-         });
         
         // Toggle attendance
         function toggleAttendance(index) {
@@ -684,7 +823,8 @@
                         const defense = parseInt(row[5]) || 5;
                         const teamwork = parseInt(row[6]) || 5;
                         const experience = parseInt(row[7]) || 5;
-                        const regular = row[8] ? (row[8].toString().toLowerCase() === 'true' || row[8].toString().toLowerCase() === 'yes' || row[8] === '1') : false;
+                        const regularRaw = row[8] ? row[8].toString().trim().toUpperCase() : "";
+                        const regular = regularRaw === "REGULAR" || regularRaw === "TRUE" || regularRaw === "YES" || regularRaw === "1";
                         
                         if (gender === 'M' || gender === 'F') {
                             const player = new Player(name, gender, throwing, cutting, athleticism, defense, teamwork, experience, regular, 'sheets');
@@ -718,19 +858,32 @@
             }
         }
         
+        function toggleAllRegularAttendance() {
+            const regularPlayers = players.filter(p => p.regular);
+            const allSelected = regularPlayers.length > 0 && regularPlayers.every(p => p.attending);
+            regularPlayers.forEach(p => p.attending = !allSelected);
+            updateRegularPlayersSection();
+            updatePlayerList();
+        }
+
         function updateRegularPlayersSection() {
             const regularPlayers = players.filter(p => p.regular);
             const section = document.getElementById('regularPlayersSection');
             const list = document.getElementById('regularPlayersList');
-            
+            const selectAllBtn = document.getElementById('regularSelectAllBtn');
+
             if (regularPlayers.length === 0) {
                 section.style.display = 'none';
                 return;
             }
-            
+
             section.style.display = 'block';
             list.innerHTML = '';
-            
+
+            // Update button text
+            const allSelected = regularPlayers.length > 0 && regularPlayers.every(p => p.attending);
+            selectAllBtn.textContent = allSelected ? 'Deselect All' : 'Select All';
+
             regularPlayers.forEach(player => {
                 const toggle = document.createElement('div');
                 toggle.className = `regular-player-toggle ${player.gender.toLowerCase() === 'f' ? 'female' : 'male'} ${player.attending ? 'active' : ''}`;
@@ -881,9 +1034,9 @@
         // Generate teams function
         async function generateTeams() {
             const attendingPlayers = players.filter(p => p.attending);
-            const numTeams = parseInt(document.getElementById('numTeams').value);
+            const numTeams = selectedNumTeams;
             const minPlayersNeeded = numTeams * 5; // Minimum 5 players per team
-            
+
             if (attendingPlayers.length < minPlayersNeeded) {
                 alert(`Need at least ${minPlayersNeeded} attending players to generate ${numTeams} teams (minimum 5 per team)!`);
                 return;
@@ -1003,6 +1156,109 @@
         
         // Uncomment the line below to add sample players for testing
         // addSamplePlayers();
+
+        function changeNumTeams(delta) {
+            const numTeamsInput = document.getElementById('numTeams');
+            let value = parseInt(numTeamsInput.value) || 2;
+            value += delta;
+            if (value < 2) value = 2;
+            if (value > 20) value = 20;
+            numTeamsInput.value = value;
+        }
+
+        function clearSelection() {
+            players.forEach(p => p.attending = false);
+            updatePlayerList();
+            updateRegularPlayersSection();
+        }
+
+        function copyTeamsToClipboard() {
+            if (!teams || teams.length === 0) return;
+
+            let text = '';
+            teams.forEach((team, idx) => {
+                const femaleCount = team.filter(p => p.gender === 'F').length;
+                const maleCount = team.length - femaleCount;
+                text += `Team ${idx + 1} (${team.length} players, ${maleCount}M/${femaleCount}F):\n`;
+                text += team.map(p => `- ${p.name} (${p.gender})`).join('\n');
+                text += '\n\n';
+            });
+
+            // Try Clipboard API first
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text.trim()).then(() => {
+                    alert('Teams copied to clipboard!');
+                }, fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
+
+            function fallbackCopy() {
+                // Create a temporary textarea
+                const textarea = document.createElement('textarea');
+                textarea.value = text.trim();
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Teams copied to clipboard!');
+                } catch (err) {
+                    alert('Failed to copy teams. Please select and copy manually.');
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        let selectedNumTeams = 2;
+
+function renderNumTeamsButtons() {
+    const grid = document.getElementById('numTeamsGrid');
+    grid.innerHTML = '';
+    for (let i = 2; i <= 10; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'num-teams-btn' + (i === selectedNumTeams ? ' active' : '');
+        btn.textContent = i;
+        btn.onclick = () => {
+            selectedNumTeams = i;
+            renderNumTeamsButtons();
+        };
+        grid.appendChild(btn);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    renderNumTeamsButtons();
+    setRegularPlayer(false);
+    document.getElementById('playerForm').style.display = 'none';
+    document.getElementById('addPlayerToggleIcon').innerHTML = '&#x25BC;';
+    const searchInput = document.getElementById('playerSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', updatePlayerList);
+    }
+});
+
+function setRegularPlayer(isRegular) {
+    document.getElementById('playerRegular').value = isRegular ? "true" : "false";
+    document.getElementById('regularYesBtn').classList.toggle('active', isRegular);
+    document.getElementById('regularNoBtn').classList.toggle('active', !isRegular);
+}
+
+function toggleAddPlayerForm() {
+    const form = document.getElementById('playerForm');
+    const icon = document.getElementById('addPlayerToggleIcon');
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        icon.innerHTML = '&#x25B2;'; // Up arrow
+    } else {
+        form.style.display = 'none';
+        icon.innerHTML = '&#x25BC;'; // Down arrow
+    }
+}
     </script>
 </body>
 </html>
